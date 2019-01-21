@@ -103,18 +103,17 @@ function setup() {
       // create button that submits scores of selected critic
       // and returns Euclidean difference
 
-      var button = createButton("Submit");
-      button.mousePressed(euclideanSimilarity);
-
-
-    })
-  })
+        var button = createButton("Submit");
+        button.mousePressed(findNearestNeighbour);
+      }
+    });
+  });
 };
 
-function euclideanSimilarity(name1, name2){
-        
-  console.log("critic1", critic1)
+// returns similarity score of 2 numbers
 
+function euclideanSimilarity(data, name1, name2){
+        
   // iterate array of movie names of critic1
   var moviesList = data.movies;
   var scoreCritic1;
@@ -126,23 +125,23 @@ function euclideanSimilarity(name1, name2){
 
   for (var i = 0; i < moviesList.length; i++){  
     movieToCompare = moviesList[i];
-    scoreCritic1 = data.ratings[critic1][movieToCompare];
-    scoreCritic2 = data.ratings[critic2][movieToCompare];
+    scoreCritic1 = data.ratings[name1][movieToCompare];
+    scoreCritic2 = data.ratings[name2][movieToCompare];
     diff = scoreCritic1 - scoreCritic2;
     console.log("movie + diff", movieToCompare, diff)
     if (isNaN(diff)) {
       console.log("not a number")
     } else {
-       sumSquareDiff += diff * diff;
-      console.log("sum square", sumSquareDiff)
+      sumSquareDiff += diff * diff;
     }
-   
   }
-
   var dist = 1 / (1+ sqrt(sumSquareDiff));
-
   return dist;
-}
+};
+
+
+// for given input critic name, find all 
+
 
 
 

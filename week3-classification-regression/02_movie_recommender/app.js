@@ -4,12 +4,30 @@ const http = require('http');
 var express = require('express');
 var app = express();
 var path = require('path');
+var data = require("./ratings.json");
+
+
+app.use("/libraries", express.static(__dirname + '/libraries'));
+app.use("/similarity.js", express.static(__dirname + '/similarity.js'));
+app.use("/script.js", express.static(__dirname + '/script.js'));
+
 
 // viewed at http://localhost:8080
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
+    console.log("I am in get");
+   	console.log("here is the data", data);
 });
 
+
+// ***** ALL ROUTES *****
+
+app.get('/api/data', function(req, res) {
+    console.log("I got a request: ", req);
+    res.send(data);
+});
+
+// ***** ALL ROUTES *****
 
 
 // // Create an instance of the http server to handle HTTP requests
@@ -29,9 +47,8 @@ console.log('Node server running on port 3000');
 // var sketch = require("sketch.js");
 
 
-var data = require("./ratings.json");
 
-console.log(data);
+// console.log(data);
 
 // function setup(){
 

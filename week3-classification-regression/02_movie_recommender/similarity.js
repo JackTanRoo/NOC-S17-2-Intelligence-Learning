@@ -10,6 +10,10 @@
 // The difference here is that the coordinates are "movie ratings"
 // and the dimensions are greater than 2
 // Function receives two people
+
+console.log("I am in similarity!");
+
+
 function euclidean(person1, person2) {
   // Ratings of person 1 and 2
   var ratings1 = ratings[person1];

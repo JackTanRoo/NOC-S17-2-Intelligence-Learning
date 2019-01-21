@@ -10,23 +10,139 @@
 
 // Get DATA from server
 
-$(document).ready(function (){
-  
-// get data
-  $.ajax({
-    url: "/api/data",
-    type: "GET",
-    success: function(result){
-      console.log("I just got data: ", result)
-    }
-  })
+// // {
+//     "info": "Data from https://github.com/arthur-e/Programming-Collective-Intelligence/blob/master/chapter2/recommendations.py",
+//     "movies": ["Lady in the Water", "Snakes on a Plane", "Just My Luck", "Superman Returns", "You, Me and Dupree", "The Night Listener"],
+//     "ratings": {
+//         "Lisa Rose": {
+//             "Lady in the Water": 2.5,
+//             "Snakes on a Plane": 3.5,
+//             "Just My Luck": 3.0,
+//             "Superman Returns": 3.5,
+//             "You, Me and Dupree": 2.5,
+//             "The Night Listener": 3.0
+//         },
+//         "Gene Seymour": {
+//             "Lady in the Water": 3.0,
+//             "Snakes on a Plane": 3.5,
+//             "Just My Luck": 1.5,
+//             "Superman Returns": 5.0,
+//             "The Night Listener": 3.0,
+//             "You, Me and Dupree": 3.5
+//         },
+//         "Michael Phillips": {
+//             "Lady in the Water": 2.5,
+//             "Snakes on a Plane": 3.0,
+//             "Superman Returns": 3.5,
+//             "The Night Listener": 4.0
+//         },
+//         "Claudia Puig": {
+//             "Snakes on a Plane": 3.5,
+//             "Just My Luck": 3.0,
+//             "The Night Listener": 4.5,
+//             "Superman Returns": 4.0,
+//             "You, Me and Dupree": 2.5
+//         },
+//         "Mick LaSalle": {
+//             "Lady in the Water": 3.0,
+//             "Snakes on a Plane": 4.0,
+//             "Just My Luck": 2.0,
+//             "Superman Returns": 3.0,
+//             "The Night Listener": 3.0,
+//             "You, Me and Dupree": 2.0
+//         },
+//         "Jack Matthews": {
+//             "Lady in the Water": 3.0,
+//             "Snakes on a Plane": 4.0,
+//             "The Night Listener": 3.0,
+//             "Superman Returns": 5.0,
+//             "You, Me and Dupree": 3.5
+//         },
+//         "Toby": {
+//             "Snakes on a Plane": 4.5,
+//             "You, Me and Dupree": 1.0,
+//             "Superman Returns": 4.0
+//         }
+//     }
+// }
 
-// 
+
+var data;
+
+function setup() {
+  console.log("i am in set up")
   noCanvas();
 
+  // get data
+  $(document).ready(function (){
+    $.ajax({
+      url: "/api/data",
+      type: "GET",
+      success: function(result){
+        
+        // define data with server data
+
+        data = result;
+
+        // create 2 dropdowns with criticNames
+
+        var criticNames = Object.keys(data.ratings);
+        console.log(criticNames);
+
+        var dropdown1 = createSelect("");
+        var dropdown2 = createSelect("");
+        for (var i = 0; i < criticNames.length; i++){
+          dropdown1.option(criticNames[i]);
+          dropdown2.option(criticNames[i]);
+        };
+
+        // work out Euclidean Similarity Score of 2 inputs
+
+        var critic1 = dropdown1.value();
+        var critic2 = dropdown2.value();
+      // create button that submits scores of selected critic
+      // and returns Euclidean difference
+
+      var button = createButton("Submit");
+      button.mousePressed(euclideanSimilarity);
 
 
-})
+    })
+  })
+};
+
+function euclideanSimilarity(name1, name2){
+        
+  console.log("critic1", critic1)
+
+  // iterate array of movie names of critic1
+  var moviesList = data.movies;
+  var scoreCritic1;
+  var scoreCritic2;
+  var movieToCompare;
+  var diff;
+
+  var sumSquareDiff = 0;
+
+  for (var i = 0; i < moviesList.length; i++){  
+    movieToCompare = moviesList[i];
+    scoreCritic1 = data.ratings[critic1][movieToCompare];
+    scoreCritic2 = data.ratings[critic2][movieToCompare];
+    diff = scoreCritic1 - scoreCritic2;
+    console.log("movie + diff", movieToCompare, diff)
+    if (isNaN(diff)) {
+      console.log("not a number")
+    } else {
+       sumSquareDiff += diff * diff;
+      console.log("sum square", sumSquareDiff)
+    }
+   
+  }
+
+  var dist = 1 / (1+ sqrt(sumSquareDiff));
+
+  return dist;
+}
 
 
 

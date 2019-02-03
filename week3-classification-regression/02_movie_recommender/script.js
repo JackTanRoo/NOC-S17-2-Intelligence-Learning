@@ -84,16 +84,15 @@ function setup() {
 
         data = result;
 
-        // create 2 dropdowns with criticNames
+        // create 1 dropdowns with criticNames
 
         var criticNames = Object.keys(data.ratings);
         console.log(criticNames);
 
         var dropdown1 = createSelect("");
-        var dropdown2 = createSelect("");
+        
         for (var i = 0; i < criticNames.length; i++){
           dropdown1.option(criticNames[i]);
-          dropdown2.option(criticNames[i]);
         };
 
         // work out Euclidean Similarity Score of 2 inputs
@@ -104,7 +103,9 @@ function setup() {
       // and returns Euclidean difference
 
         var button = createButton("Submit");
-        button.mousePressed(findNearestNeighbour);
+
+
+        button.mousePressed(findNearestNeighbour(k));
       }
     });
   });

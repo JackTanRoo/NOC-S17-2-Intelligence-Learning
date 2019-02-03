@@ -9,7 +9,7 @@ var data = require("./ratings.json");
 
 app.use("/libraries", express.static(__dirname + '/libraries'));
 app.use("/similarity.js", express.static(__dirname + '/similarity.js'));
-app.use("/script.js", express.static(__dirname + '/script.js'));
+app.use("/script-recommender.js", express.static(__dirname + '/script-recommender.js'));
 
 
 // viewed at http://localhost:8080

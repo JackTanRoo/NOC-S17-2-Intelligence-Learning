@@ -83,34 +83,133 @@ function setup() {
         // define data with server data
 
         data = result;
-
-        // create 2 dropdowns with criticNames
+        console.log("running in script-recommenders");
+        
+        // create 1 drop down with all critic names
 
         var criticNames = Object.keys(data.ratings);
         console.log(criticNames);
 
         var dropdown1 = createSelect("");
-        var dropdown2 = createSelect("");
+
         for (var i = 0; i < criticNames.length; i++){
           dropdown1.option(criticNames[i]);
-          dropdown2.option(criticNames[i]);
         };
 
-        // work out Euclidean Similarity Score of 2 inputs
 
-        var critic1 = dropdown1.value();
-        var critic2 = dropdown2.value();
-      // create button that submits scores of selected critic
-      // and returns Euclidean difference
+        console.log(critic1);
+
+        // create input field with number of recommendations wanted
+        
+        var inputField = createInput();
+
+        // console.log("score: ", euclideanSimilarity(data, "Michael Phillips","Toby"))
+
+        // create button that submits scores of selected critic
+        
+        // and returns Euclidean difference
 
         var button = createButton("Submit");
-        button.mousePressed(findNearestNeighbour);
+        
+        button.mousePressed(function(){
+
+         var critic1 = dropdown1.value();
+
+        // work out similarity score all critics relative to the selected critic
+
+
+
+        //
+
+
+          // var numRecommendations = inputField.value();
+          // console.log("button pressed")
+          // console.log(critic1);
+          // console.log("I am numRecommendations", numRecommendations);
+
+
+        });
       }
     });
   });
 };
 
-// returns similarity score of 2 numbers
+
+// for given critic name as input, calculate all euclideanSimilarity scores as a sorted array
+// return sorted array
+
+function similarityScoreForAll(data, name1){
+  var result = [];
+  var moviesList = data.movies;
+  var allCritics = Object.keys(data.ratings);
+  var similarityScore;
+
+  for (var i=0; i < allCritics; i++) {
+    // if criticAssessed = selected Critic, pass
+
+    if (allCritics[i] == name1){
+      console.log("skip as same similarity score")
+
+    } else {
+      similarityScore = euclideanSimilarity(data, name1, allCritics[i]);
+      if result.length > 0 {
+        result = binaryInsert(result, similarityScore, result[0], result[result.length-1]);
+      } else {
+        result.push(similarityScore);
+      }
+    }
+    // else produce similarity score and push to array in sorted way
+  }
+};
+
+function binaryInsert(array, element, startVal, endVal){
+
+  var length = array.length;
+  
+  var startPosition = typeof(startVal) == undefined ? 0 : startVal;
+  var endPosition = typeof(endVal) == undefined ? array.length-1 : endVal;
+  var middlePosition = Math.floor((startPosition - endPosition)/2)
+
+  // work out start, end and median positions of the array
+
+
+  // if element is larger or equal than array element in end position, then push to end of array
+
+
+
+  // if element is smaller or equal than array element in start position, then push to start of array
+
+
+
+  // if start is >= end then return
+
+
+  // if element is larger or equal to middle
+    // recursively run the function again with start and middle
+
+
+  // if element is smaller than middle
+    // recursively run the function again with middle and end
+
+}
+
+
+
+
+
+
+// for given critic name as input + a "top k recommendations", provide the top k recommendations as output
+
+
+
+
+
+
+
+// returns similarity score of 2 critics
+
+// name1 = selectedCritic
+// name2 = comparisonCritic
 
 function euclideanSimilarity(data, name1, name2){
         
@@ -135,6 +234,9 @@ function euclideanSimilarity(data, name1, name2){
       sumSquareDiff += diff * diff;
     }
   }
+
+  // console.log("I am sumSquareDiff ", sumSquareDiff);
+
   var dist = 1 / (1+ sqrt(sumSquareDiff));
   return dist;
 };

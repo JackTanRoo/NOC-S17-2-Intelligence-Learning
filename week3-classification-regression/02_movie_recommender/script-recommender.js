@@ -97,7 +97,7 @@ function setup() {
         };
 
 
-        console.log(critic1);
+        // console.log(critic1);
 
         // create input field with number of recommendations wanted
         
@@ -116,8 +116,9 @@ function setup() {
          var critic1 = dropdown1.value();
 
         // work out similarity score all critics relative to the selected critic
+         console.log("button pressed")
 
-
+         console.log(similarityScoreForAll(data, critic1));
 
         //
 
@@ -139,59 +140,148 @@ function setup() {
 // return sorted array
 
 function similarityScoreForAll(data, name1){
-  var result = [];
+  var r = [];
   var moviesList = data.movies;
   var allCritics = Object.keys(data.ratings);
   var similarityScore;
 
-  for (var i=0; i < allCritics; i++) {
-    // if criticAssessed = selected Critic, pass
 
+  // console.log("in simiarlity similarityScoreForAll, ", data, name1)
+  // console.log(" I am allCritics", allCritics)
+
+  for (var i = 0 ; i < allCritics.length; i++) {
+    // console.log(" I am allCritics", allCritics)
+
+    // if criticAssessed = selected Critic, pass
     if (allCritics[i] == name1){
-      console.log("skip as same similarity score")
+   
+      // console.log("skip as same similarity critic", allCritics[i], name1)
 
     } else {
+
+    // else calculate the similarity score and push the score to a sorted array
       similarityScore = euclideanSimilarity(data, name1, allCritics[i]);
-      if result.length > 0 {
-        result = binaryInsert(result, similarityScore, result[0], result[result.length-1]);
-      } else {
-        result.push(similarityScore);
-      }
+
+      console.log("I am similarity score between ", name1, allCritics[i], similarityScore, r);
+      
+      r = binaryInsert(r, similarityScore);
+    
+      // console.log("after binary insert");
+      // if result.length > 0 {
+      //   result = binaryInsert(result, similarityScore, result[0], result[result.length-1]);
+      // } else {
+      //   result.push(similarityScore);
+      // }
     }
     // else produce similarity score and push to array in sorted way
   }
+  return r;
 };
+
+
+// insert an element into a sorted array and return new array
 
 function binaryInsert(array, element, startVal, endVal){
 
+  console.log("array start", array, element, startVal, endVal);
   var length = array.length;
-  
-  var startPosition = typeof(startVal) == undefined ? 0 : startVal;
-  var endPosition = typeof(endVal) == undefined ? array.length-1 : endVal;
-  var middlePosition = Math.floor((startPosition - endPosition)/2)
+
 
   // work out start, end and median positions of the array
 
+  // var startPosition = typeof(startVal) != undefined ? startVal : 0;
+  // var endPosition = typeof(endVal) != undefined ? endVal: (array.length - 1);
+
+  var startPosition;
+  var endPosition;
+  
+  if (typeof(startVal) == "undefined"){
+    startPosition = 0;
+    console.log("I am in undefined", startPosition)
+  } else {
+    startPosition = startVal;
+  };
+
+  if (typeof(endVal) == "undefined"){
+    endPosition = array.length-1;
+    console.log("end position", endPosition);
+    // if(array.length <= 1){
+    //   endPosition = array.length;
+    //       console.log("I am in undefined 2")
+
+    // } else {
+    //   endPosition = array.length - 1;
+    // }
+  } else {
+    endPosition = endVal;
+  };
+
+  // console.log("2", array, startPosition, endPosition);
+// 
+
+  var middlePosition = startPosition + Math.floor((endPosition - startPosition)/2);
+
+  // var result = array;
+
+  console.log("I am in binary insert, here is r", array, element, startPosition, endPosition, middlePosition);
+      
+  // if array is empty, then push element into array
+
+  if (array.length == 0){
+    array.push(element)
+    // console.log(" I am in 1", array);
+    return array;
+  };
 
   // if element is larger or equal than array element in end position, then push to end of array
 
+  if ( element >= array[endPosition]){
+    array.push(element);
+    console.log(" I am in 2", array);
+    return array;
 
+  };
 
   // if element is smaller or equal than array element in start position, then push to start of array
 
+  if ( element <= array[startPosition]){
+    array.unshift(element);
+    return array;
+  };
 
+  // 
+
+  if (array.length == 2 && element <= array[endPosition] && element >= array[startPosition]) {
+    array.splice(startPosition + 1, 0, element);
+    console.log("I am in 4", array)
+    return array;
+  }
 
   // if start is >= end then return
 
+  if ( startPosition > endPosition){
+    return array;
+  };
 
   // if element is larger or equal to middle
     // recursively run the function again with start and middle
 
+  if ( element <= array[middlePosition] ){
+    console.log("I am in 3", array, element, middlePosition)
+    array = binaryInsert(array, element, startPosition, middlePosition - 1);
+    return array;
+  };
 
   // if element is smaller than middle
-    // recursively run the function again with middle and end
 
-}
+  if ( element > array[middlePosition] ){
+    array = binaryInsert(array, element, middlePosition + 1, endPosition);
+    return array;
+  };
+
+  return array;
+
+};
 
 
 
@@ -227,9 +317,10 @@ function euclideanSimilarity(data, name1, name2){
     scoreCritic1 = data.ratings[name1][movieToCompare];
     scoreCritic2 = data.ratings[name2][movieToCompare];
     diff = scoreCritic1 - scoreCritic2;
-    console.log("movie + diff", movieToCompare, diff)
+    // console.log("movie + diff", movieToCompare, diff)
+ 
     if (isNaN(diff)) {
-      console.log("not a number")
+      // console.log("not a number")
     } else {
       sumSquareDiff += diff * diff;
     }

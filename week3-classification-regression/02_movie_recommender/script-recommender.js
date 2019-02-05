@@ -236,7 +236,7 @@ function binaryInsert(array, element, startVal, endVal){
   // if element is larger or equal than array element in end position, then push to end of array
 
   if ( element >= array[endPosition]){
-    array.push(element);
+    array.splice(endPosition+1, 0, element);
     console.log(" I am in 2", array);
     return array;
 
@@ -245,7 +245,7 @@ function binaryInsert(array, element, startVal, endVal){
   // if element is smaller or equal than array element in start position, then push to start of array
 
   if ( element <= array[startPosition]){
-    array.unshift(element);
+    array.splice(startPosition,0, element);
     return array;
   };
 
@@ -275,6 +275,8 @@ function binaryInsert(array, element, startVal, endVal){
   // if element is smaller than middle
 
   if ( element > array[middlePosition] ){
+    console.log(" I am in 5", array, middlePosition, element, array[middlePosition]);
+
     array = binaryInsert(array, element, middlePosition + 1, endPosition);
     return array;
   };

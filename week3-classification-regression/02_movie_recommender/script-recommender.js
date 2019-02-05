@@ -113,17 +113,20 @@ function setup() {
         
         button.mousePressed(function(){
 
-         var critic1 = dropdown1.value();
-
+          var critic1 = dropdown1.value();
+          var numRecommendations = inputField.value();
+        
         // work out similarity score all critics relative to the selected critic
-         console.log("button pressed")
+          console.log("button pressed")
+          console.log("I am the final result array", similarityScoreForAll(data, critic1));
 
-         console.log(similarityScoreForAll(data, critic1));
-
+          var screen = similarityScoreForAll(data, critic1);
         //
-
-
-          // var numRecommendations = inputField.value();
+          for (i = 0; i < numRecommendations; i++){
+            createP(screen[i])
+            console.log("WWWW")
+          }
+          
           // console.log("button pressed")
           // console.log(critic1);
           // console.log("I am numRecommendations", numRecommendations);

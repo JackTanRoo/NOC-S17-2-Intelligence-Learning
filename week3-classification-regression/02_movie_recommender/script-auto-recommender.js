@@ -85,17 +85,15 @@ function setup() {
         // define data with server data
 
         data = result;
-        console.log("running in script-recommenders");
         
         // create 1 drop down with all critic names
 
-        var criticNames = Object.keys(data.ratings);
-        console.log(criticNames);
+        var movieNames = result.movies;
 
         var dropdown1 = createSelect("");
 
-        for (var i = 0; i < criticNames.length; i++){
-          dropdown1.option(criticNames[i]);
+        for (var i = 0; i < movieNames.length; i++){
+          dropdown1.option(movieNames[i]);
         };
 
 

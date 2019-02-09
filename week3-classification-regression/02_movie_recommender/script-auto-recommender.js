@@ -88,20 +88,113 @@ function setup() {
         
         // create 1 drop down with all critic names
 
+
+        // setting up all the movie names and dropdown selections
         var movieNames = result.movies;
 
-        var dropdown1 = createSelect("");
+        var movieNameSingle;;
+        
+        var userSelection = {};
+
+        // mySelection = {
+            // movie: rating
+        // }
+
+        var dropdownSelection = ["No selection", 1,2,3,4,5];
+
+        var allSelectionDropDowns = {};
 
         for (var i = 0; i < movieNames.length; i++){
-          dropdown1.option(movieNames[i]);
+           
+          movieNameSingle = createP(movieNames[i]);
+          
+          userSelection[movieNames[i]] = undefined;
+
+          allSelectionDropDowns[movieNames[i]] = createSelect();
+
+          for (var j = 0; j < dropdownSelection.length; j++){
+            allSelectionDropDowns[movieNames[i]].option(dropdownSelection[j])
+            console.log("j loop", allSelectionDropDowns, userSelection);
+          
+          };
+          console.log("loop end");
         };
 
 
+
+        // once user submits scores, calculate the similarity score with top 5 other critics for the chosen scores
+
+
+
+
+
+        // out of the top 5 other critics, work out their ratings for the remaining non rated movies
+
+
+
+
+        // weight the ratings for the non rated ratings for the user
+
+
+
+
+
+        var button = createButton("Submit");
+        
+        button.mousePressed(function(){
+
+        
+
+
+        
+
+
+        });
+
+
+
+
+
+
+
+        // var button = createButton("Submit");
+        
+        // button.mousePressed(function(){
+
+        // // console.log("current value", allSelectionDropDowns["Lady in the Water"].value())
+
+        // //   var critic1 = dropdown1.value();
+        // //   var numRecommendations = inputField.value();
+        
+        // // // work out similarity score all critics relative to the selected critic
+        // //   console.log("button pressed")
+        // //   console.log("I am the final result array", similarityScoreForAll(data, critic1));
+
+        // //   var screen = similarityScoreForAll(data, critic1);
+        // // //
+        // //   for (i = 0; i < numRecommendations; i++){
+        // //     createP(screen[i])
+        // //     console.log("WWWW")
+        // //   }
+          
+        // //   // console.log("button pressed")
+        // //   // console.log(critic1);
+        // //   // console.log("I am numRecommendations", numRecommendations);
+
+
+        // });
+
+
+
+
+
+
+        // console.log("current value", allSelectionDropDowns["Lady in the Water"].value())
         // console.log(critic1);
 
         // create input field with number of recommendations wanted
         
-        var inputField = createInput();
+        // var inputField = createInput();
 
         // console.log("score: ", euclideanSimilarity(data, "Michael Phillips","Toby"))
 
@@ -109,41 +202,18 @@ function setup() {
         
         // and returns Euclidean difference
 
-        var button = createButton("Submit");
-        
-        button.mousePressed(function(){
 
-        //   var critic1 = dropdown1.value();
-        //   var numRecommendations = inputField.value();
-        
-        // // work out similarity score all critics relative to the selected critic
-        //   console.log("button pressed")
-        //   console.log("I am the final result array", similarityScoreForAll(data, critic1));
-
-        //   var screen = similarityScoreForAll(data, critic1);
-        // //
-        //   for (i = 0; i < numRecommendations; i++){
-        //     createP(screen[i])
-        //     console.log("WWWW")
-        //   }
-          
-        //   // console.log("button pressed")
-        //   // console.log(critic1);
-        //   // console.log("I am numRecommendations", numRecommendations);
-
-
-        });
       }
     });
   });
 };
 
 
-// for given critic name as input, calculate all euclideanSimilarity scores as a sorted array
+// for given userRatings as input, calculate all euclideanSimilarity scores as a sorted array
 // return sorted array
 
-function similarityScoreForAll(data, name1){
-  var r = [];
+function similarityScoreForAll(data, userRatings){
+  var r = {};
   var moviesList = data.movies;
   var allCritics = Object.keys(data.ratings);
   var similarityScore;
@@ -158,7 +228,7 @@ function similarityScoreForAll(data, name1){
     // if criticAssessed = selected Critic, pass
     if (allCritics[i] == name1){
    
-      // console.log("skip as same similarity critic", allCritics[i], name1)
+      // skip
 
     } else {
 
@@ -179,6 +249,20 @@ function similarityScoreForAll(data, name1){
     // else produce similarity score and push to array in sorted way
   }
   return r;
+
+  // r format
+  // {
+    // self: 
+    // mostSimilarCritic: [
+    // {
+      // name: xxx, 
+      // similarityScore: xxx, 
+      // movieRatings: {
+          // movieName: xxx
+      // }
+    // }
+    // ]
+  // }
 };
 
 

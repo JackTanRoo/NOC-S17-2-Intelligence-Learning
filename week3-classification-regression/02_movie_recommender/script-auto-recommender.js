@@ -92,11 +92,11 @@ function setup() {
         // setting up all the movie names and dropdown selections
         var movieNames = result.movies;
 
-        var movieNameSingle;;
+        // var movieNameSingle;;
         
         var userSelection = {};
 
-        // mySelection = {
+        // userSelection = {
             // movie: rating
         // }
 
@@ -114,12 +114,34 @@ function setup() {
 
           for (var j = 0; j < dropdownSelection.length; j++){
             allSelectionDropDowns[movieNames[i]].option(dropdownSelection[j])
-            console.log("j loop", allSelectionDropDowns, userSelection);
+            // console.log("user selection", userSelection);
           
           };
-          console.log("loop end");
+          // console.log("loop end");
         };
 
+
+
+        
+
+
+
+
+
+        var button = createButton("Submit");
+        
+        button.mousePressed(function(){
+
+        
+        // update userSelection with selected values
+
+          for (var k = 0; k < movieNames.length; k++ ){
+            userSelection[movieNames[k]] = allSelectionDropDowns[movieNames[k]].value();
+          };
+
+        // console.log(userSelection);
+
+        // console.log("euclidean score", euclideanSimilarity(data, userSelection, "Lisa Rose"))
 
 
         // once user submits scores, calculate the similarity score with top 5 other critics for the chosen scores
@@ -133,17 +155,13 @@ function setup() {
 
 
 
+
         // weight the ratings for the non rated ratings for the user
 
 
 
 
 
-        var button = createButton("Submit");
-        
-        button.mousePressed(function(){
-
-        
 
 
         
@@ -213,7 +231,10 @@ function setup() {
 // return sorted array
 
 function similarityScoreForAll(data, userRatings){
-  var r = {};
+  var r = {
+    user: userRatings,
+    similarCritics : []
+  };
   var moviesList = data.movies;
   var allCritics = Object.keys(data.ratings);
   var similarityScore;
@@ -226,18 +247,18 @@ function similarityScoreForAll(data, userRatings){
     // console.log(" I am allCritics", allCritics)
 
     // if criticAssessed = selected Critic, pass
-    if (allCritics[i] == name1){
+    if (allCritics[i] == userRatings){
    
       // skip
 
     } else {
 
     // else calculate the similarity score and push the score to a sorted array
-      similarityScore = euclideanSimilarity(data, name1, allCritics[i]);
+      similarityScore = euclideanSimilarity(data, userRatings, allCritics[i]);
 
-      console.log("I am similarity score between ", name1, allCritics[i], similarityScore, r);
+      // console.log("I am similarity score between ", name1, allCritics[i], similarityScore, r);
       
-      r = binaryInsert(r, similarityScore);
+      r.similarCritics = binaryInsert(r.similarCritics, similarityScore);
     
       // console.log("after binary insert");
       // if result.length > 0 {
@@ -252,7 +273,7 @@ function similarityScoreForAll(data, userRatings){
 
   // r format
   // {
-    // self: 
+    // user: 
     // mostSimilarCritic: [
     // {
       // name: xxx, 
@@ -386,11 +407,12 @@ function binaryInsert(array, element, startVal, endVal){
 
 
 // returns similarity score of 2 critics
+// importantly, it only compares the similarity score of movies which overlap
 
-// name1 = selectedCritic
+// userRatingsObj = the ratings Obj of the rating
 // name2 = comparisonCritic
 
-function euclideanSimilarity(data, name1, name2){
+function euclideanSimilarity(data, userRatingsObj, name2){
         
   // iterate array of movie names of critic1
   var moviesList = data.movies;
@@ -403,13 +425,17 @@ function euclideanSimilarity(data, name1, name2){
 
   for (var i = 0; i < moviesList.length; i++){  
     movieToCompare = moviesList[i];
-    scoreCritic1 = data.ratings[name1][movieToCompare];
+    // scoreCritic1 = data.ratings[name1][movieToCompare];
+
+    // user Score
+    scoreCritic1 = userRatingsObj[movieToCompare]
+
     scoreCritic2 = data.ratings[name2][movieToCompare];
     diff = scoreCritic1 - scoreCritic2;
-    // console.log("movie + diff", movieToCompare, diff)
+    console.log("movie + diff", movieToCompare, diff)
  
     if (isNaN(diff)) {
-      // console.log("not a number")
+      console.log("not a number", scoreCritic1, scoreCritic2, diff)
     } else {
       sumSquareDiff += diff * diff;
     }

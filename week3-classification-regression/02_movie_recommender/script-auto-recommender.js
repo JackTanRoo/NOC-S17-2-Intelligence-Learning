@@ -128,12 +128,25 @@ function setup() {
         
         button.mousePressed(function(){
 
-        
-        // update userSelection with selected values
+          var nonUserRatedMovies = [];
+
+        // update userSelection with selected values 
+        // create movie names and recommended score
 
           for (var k = 0; k < movieNames.length; k++ ){
             userSelection[movieNames[k]] = allSelectionDropDowns[movieNames[k]].value();
+            
+            if (allSelectionDropDowns[movieNames[k]].value() == "No selection"){
+              
+              nonUserRatedMovies.push(movieNames[k]);
+              // nonUserRatedMovies = [movieX, movieY]
+              console.log("I am all Selection DropDowns", nonUserRatedMovies)
+            }
+
           };
+
+
+
 
         // console.log(userSelection);
 
@@ -143,32 +156,23 @@ function setup() {
 
         // once user submits scores, calculate the similarity score with top 5 other critics for the chosen scores
 
+          var similarCriticsObj = similarityScoreForAll(data, userSelection)
 
+          // console.log("I am FINAL: ", similarCriticsObj)
 
+        // out of the top 5 other critics, work out their weighted ratings for the remaining non rated movies
 
+          var unRatedMoviesRecommendations = weightedAverageRecommender(nonUserRatedMovies, similarCriticsObj.similarCritics, 5)
+          console.log("FINAL ", unRatedMoviesRecommendations);
+          // put the recommendations on the DOM
 
-        // out of the top 5 other critics, work out their ratings for the remaining non rated movies
-
-
-
-
-
-        // weight the ratings for the non rated ratings for the user
-
-
-        var final = similarityScoreForAll(data, userSelection)
-
-        console.log("THIS IS FINAL", final)
-
-        
+          for (var movieNameSingle in unRatedMoviesRecommendations) {
+            createP(movieNameSingle)
+            createP(Math.ceil(unRatedMoviesRecommendations[movieNameSingle]));
+          }
 
 
         });
-
-
-
-
-
 
 
         // var button = createButton("Submit");
@@ -222,6 +226,48 @@ function setup() {
   });
 };
 
+function weightedAverageRecommender (userNonRatedMovieArray, similarCriticsArray, numCriticsToCompare ){
+  var result = {}
+  var nonRatedMovie;
+  var similarityWeightedScore = 0;
+  var totalSimilarityScore = 0
+
+  console.log("weightedAverageRecommender", userNonRatedMovieArray, similarCriticsArray, numCriticsToCompare)
+
+  for (var i = 0; i < userNonRatedMovieArray.length; i++){
+    nonRatedMovie = userNonRatedMovieArray[i];
+    
+    // iterate through each nonRated Film
+    console.log("userNonRatedMovie", nonRatedMovie)
+
+
+    for (var j = 0; j < numCriticsToCompare; j++) {
+      if (similarCriticsArray[j].movieRatings[nonRatedMovie] != undefined ){
+        // console.log("similarCriticsArray[j].movieRatings[nonRatedMovie", similarCriticsArray[j].movieRatings[nonRatedMovie])
+
+        similarityWeightedScore += similarCriticsArray[j].movieRatings[nonRatedMovie] * similarCriticsArray[j].similarityScore;
+        totalSimilarityScore += similarCriticsArray[j].similarityScore;
+        // console.log("similarityWeightedScore, totalSimilarityScore", similarCriticsArray[j].movieRatings[nonRatedMovie], similarCriticsArray[j].similarityScore, similarityWeightedScore, totalSimilarityScore);
+      }
+    };
+    // assign the weighted similarity score for the specific movie
+    // then reset the similarityWeightedScore and totalSimilarityScore to 0 for next movie
+
+    result[nonRatedMovie] = similarityWeightedScore / totalSimilarityScore;
+    similarityWeightedScore = 0;
+    totalSimilarityScore = 0;
+    // console.log("similarityWeightedScore, totalSimilarityScore", result);
+  }
+
+
+  // result = {
+    // movie: recommendedScore
+  // }
+
+  return result;
+}
+
+
 
 // for given userRatings as input, calculate all euclideanSimilarity scores as a sorted array
 // return sorted array
@@ -242,7 +288,7 @@ function similarityScoreForAll(data, userRatings){
   // console.log(" I am allCritics", allCritics)
 
   for (var z = 0 ; z < allCritics.length; z++) {
-    console.log(" I am allCritics", allCritics[z])
+    // console.log(" I am allCritics", allCritics[z])
 
     // if criticAssessed = selected Critic, pass
    
@@ -341,7 +387,7 @@ function binaryInsert(array, element, criticObj, criticName, startVal, endVal){
 
   // var result = array;
 
-  console.log("I am in binary insert, here is r", array, criticName, element, startPosition, endPosition, middlePosition);
+  // console.log("I am in binary insert, here is r", array, criticName, element, startPosition, endPosition, middlePosition);
       
   // if array is empty, then push element into array
 
